@@ -1,9 +1,11 @@
+import { PostsService } from './posts.service';
 import { Controller, Get } from '@nestjs/common';
 
 @Controller('posts')
 export class PostsController {
+  constructor(private readonly postsService: PostsService) {}
   @Get('generate')
-  generate() {
-    // La logique pour générer les posts va ici
+  async generate() {
+    return await this.postsService.generate();
   }
 }
