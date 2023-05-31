@@ -16,6 +16,18 @@ export class PostsService {
   }
 
   async generate() {
-    return 'text by chat-gpt';
+    try {
+      const response = await this.openai.createCompletion({
+        model: 'text-davinci-003',
+        prompt: 'Fais moi une blague.',
+        max_tokens: 200,
+        temperature: 0.5,
+        n: 1,
+      });
+
+      return response.data.choices[0];
+    } catch (err: any) {
+      return err.response;
+    }
   }
 }
