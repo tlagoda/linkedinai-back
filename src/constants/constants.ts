@@ -1,0 +1,33 @@
+export const TONES: Record<string, string> = {
+  PROFESSIONAL: 'professionnel',
+  INFORMAL: 'informel',
+  MOTIVATIONAL: 'motivationnel',
+  EDUCATIONAL: 'éducatif',
+  INSPIRATIONAL: 'inspirant',
+  HUMOROUS: 'humoristique',
+  CASUAL: 'décontracté',
+  SERIOUS: 'sérieux',
+  POSITIVE: 'positif',
+  NEGATIVE: 'négatif',
+  SKEPTICAL: 'sceptique',
+  OPTIMISTIC: 'optimiste',
+  PESSIMISTIC: 'pessimiste',
+};
+
+export const SUBJECTS: Record<string, string> = {
+  LEADERSHIP: 'leadership',
+  ENTREPRENEURSHIP: 'entrepreneuriat',
+  NETWORKING: 'réseautage',
+  PERSONAL_DEVELOPMENT: 'développement personnel',
+  JOB_SEARCH: "recherche d'emploi",
+  CAREER_ADVICE: 'conseils de carrière',
+  TECH_INNOVATION: 'innovation technologique',
+  DIVERSITY_INCLUSION: 'diversité et inclusion',
+  REMOTE_WORK: 'travail à distance',
+  DATA_ANALYTICS: 'analyse de données',
+  MARKETING_STRATEGY: 'stratégie marketing',
+  MENTAL_HEALTH: 'santé mentale',
+  SUSTAINABILITY: 'durabilité',
+  DIGITAL_TRANSFORMATION: 'transformation numérique',
+  AI_MACHINE_LEARNING: 'IA et apprentissage automatique',
+};
