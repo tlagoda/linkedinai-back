@@ -2,6 +2,8 @@ import { SharePostDto } from './dto/posts-share.dto';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Configuration, OpenAIApi } from 'openai';
+import axios from 'axios';
+import { globalVariable } from 'src/global/global';
 
 @Injectable()
 export class PostsService {
@@ -32,5 +34,38 @@ export class PostsService {
     }
   }
 
-  async shareOnLinkedIn(postContent: SharePostDto) {}
+  async shareOnLinkedIn(postContent: SharePostDto) {
+    const shareContent = {
+      author: `urn:li:person:${globalVariable.personURN}`,
+      lifecycleState: 'PUBLISHED',
+      specificContent: {
+        'com.linkedin.ugc.ShareContent': {
+          shareCommentary: {
+            text: 'THIS IS A POST!',
+          },
+          shareMediaCategory: 'NONE',
+        },
+      },
+      visibility: {
+        'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC',
+      },
+    };
+
+    try {
+      const response = await axios.post(
+        'https://api.linkedin.com/v2/ugcPosts',
+        shareContent,
+        {
+          headers: {
+            'X-Restli-Protocol-Version': '2.0.0',
+            Authorization: `Bearer ${globalVariable.accessToken}`,
+          },
+        },
+      );
+
+      console.log('Share posted successfully:', response.data);
+    } catch (error) {
+      console.error('Error posting share:', error);
+    }
+  }
 }
