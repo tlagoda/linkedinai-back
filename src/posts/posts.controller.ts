@@ -1,6 +1,12 @@
 import { SharePostDto } from './dto/posts-share.dto';
 import { PostsService } from './posts.service';
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  InternalServerErrorException,
+  Post,
+} from '@nestjs/common';
 
 @Controller('posts')
 export class PostsController {
@@ -12,7 +18,12 @@ export class PostsController {
 
   @Post('share')
   async share(@Body() content: SharePostDto) {
-    const response = await this.postsService.shareOnLinkedIn(content);
-    return response;
+    try {
+      const response = await this.postsService.shareOnLinkedIn(content);
+      return response;
+    } catch (error) {
+      console.error('Error while sharing on LinkedIn:', error);
+      throw new InternalServerErrorException('Failed to share on LinkedIn');
+    }
   }
 }

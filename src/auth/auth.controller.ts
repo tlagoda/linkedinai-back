@@ -9,7 +9,6 @@ export class AuthController {
 
   @Get('linkedin/callback')
   async linkedinRedirect(@Req() req: Request, @Res() res: Response) {
-    console.log('LinkedIn redirection');
     const { code, state } = req.query;
 
     // Swap code for access token
@@ -21,7 +20,12 @@ export class AuthController {
       tokenResponse.data;
     globalVariable.accessToken = accessToken;
     globalVariable.expiresIn = expiresIn;
-    //TODO
+
+    const userInformations =
+      await this.authService.getLinkedInUserInformations();
+
+    globalVariable.userId = userInformations.data.id;
+
     res.send('LinkedIn callback successful!');
   }
 }

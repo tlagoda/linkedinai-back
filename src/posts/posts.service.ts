@@ -36,12 +36,12 @@ export class PostsService {
 
   async shareOnLinkedIn(content: SharePostDto) {
     const shareContent = {
-      author: `urn:li:person:hFn5WVYXgu`,
+      author: `urn:li:person:${globalVariable.userId}`,
       lifecycleState: 'PUBLISHED',
       specificContent: {
         'com.linkedin.ugc.ShareContent': {
           shareCommentary: {
-            text: 'THIS IS A POST!',
+            text: 'THIS IS A POST BY API!',
           },
           shareMediaCategory: 'NONE',
         },
@@ -62,7 +62,8 @@ export class PostsService {
           },
         },
       );
-      return response;
+      const postId = response.data.id;
+      return { postId };
     } catch (error) {
       console.error('Error posting share:', error);
     }
