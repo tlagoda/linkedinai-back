@@ -7,11 +7,12 @@ import { ConfigModule } from '@nestjs/config';
 import { LinkedinController } from './linkedin/linkedin.controller';
 import { LinkedinService } from './linkedin/linkedin.service';
 import { AuthController } from './auth/auth.controller';
+import { AuthService } from './auth/auth.service';
 
 
 @Module({
   imports: [ConfigModule.forRoot()],
   controllers: [AppController, PostsController, LinkedinController, AuthController],
-  providers: [AppService, PostsService, LinkedinService],
+  providers: [AppService, PostsService, LinkedinService, AuthService],
 })
 export class AppModule {}
