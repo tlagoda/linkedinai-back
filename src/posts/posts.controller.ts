@@ -17,9 +17,10 @@ export class PostsController {
   }
 
   @Post('share')
-  async share(@Body() content: SharePostDto) {
+  async share(@Body() postContent: SharePostDto) {
+    console.log('share');
     try {
-      const response = await this.postsService.shareOnLinkedIn(content);
+      const response = await this.postsService.shareOnLinkedIn(postContent);
       return response;
     } catch (error) {
       console.error('Error while sharing on LinkedIn:', error);

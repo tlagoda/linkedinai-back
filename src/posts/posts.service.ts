@@ -35,14 +35,14 @@ export class PostsService {
     }
   }
 
-  async shareOnLinkedIn(content: SharePostDto) {
+  async shareOnLinkedIn(postContent: SharePostDto) {
     const shareContent = {
       author: `urn:li:person:${globalVariable.userId}`,
       lifecycleState: 'PUBLISHED',
       specificContent: {
         'com.linkedin.ugc.ShareContent': {
           shareCommentary: {
-            text: 'THIS IS A POST BY API!',
+            text: postContent.content,
           },
           shareMediaCategory: 'NONE',
         },
