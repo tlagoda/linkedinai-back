@@ -1,6 +1,7 @@
 import { AuthService } from './auth.service';
 import { Controller, Get, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { globalVariable } from '../global/global';
 
 @Controller('auth')
 export class AuthController {
@@ -16,7 +17,11 @@ export class AuthController {
       code.toString(),
     );
 
-    const { access_token, expires_in } = tokenResponse.data;
+    const { access_token: accessToken, expires_in: expiresIn } =
+      tokenResponse.data;
+    globalVariable.accessToken = accessToken;
+    globalVariable.expiresIn = expiresIn;
+
     //TODO
     res.send('LinkedIn callback successful!');
   }
