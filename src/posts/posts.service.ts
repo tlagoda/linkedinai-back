@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { Configuration, OpenAIApi } from 'openai';
 import axios from 'axios';
 import { globalVariable } from 'src/global/global';
+import { prompt1 } from './prompts/prompts';
 
 @Injectable()
 export class PostsService {
@@ -22,9 +23,9 @@ export class PostsService {
     try {
       const response = await this.openai.createCompletion({
         model: 'text-davinci-003',
-        prompt: 'Fais moi une blague.',
-        max_tokens: 200,
-        temperature: 0.5,
+        prompt: prompt1,
+        max_tokens: 500,
+        temperature: 0.8,
         n: 1,
       });
 
