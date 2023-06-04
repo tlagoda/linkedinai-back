@@ -1,3 +1,4 @@
+import { SharePostDto } from './dto/posts-share.dto';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Configuration, OpenAIApi } from 'openai';
@@ -30,4 +31,6 @@ export class PostsService {
       return err.response;
     }
   }
+
+  async shareOnLinkedIn(postContent: SharePostDto) {}
 }

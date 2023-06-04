@@ -1,6 +1,6 @@
 import { IsNumber, IsString } from 'class-validator';
 
-export class GenerateDto {
+export class GeneratePostDto {
   @IsString()
   readonly prompt: string;
 

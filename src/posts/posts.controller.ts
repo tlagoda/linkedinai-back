@@ -1,5 +1,6 @@
+import { SharePostDto } from './dto/posts-share.dto';
 import { PostsService } from './posts.service';
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 
 @Controller('posts')
 export class PostsController {
@@ -7,5 +8,10 @@ export class PostsController {
   @Get('generate')
   async generate() {
     return await this.postsService.generate();
+  }
+
+  @Post('share')
+  async share(@Body() postContent: SharePostDto) {
+    const response = await this.postsService.shareOnLinkedIn(postContent);
   }
 }
