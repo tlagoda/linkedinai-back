@@ -7,6 +7,11 @@ export class AuthService {
   constructor(private configService: ConfigService) {}
 
   async getLinkedInToken(code: string) {
+    const clientId = this.configService.get<string>('LINKEDIN_CLIENT_ID');
+    const clientSecret = this.configService.get<string>(
+      'LINKEDIN_CLIENT_SECRET',
+    );
+
     const tokenResponse = await axios.post(
       'https://www.linkedin.com/oauth/v2/accessToken',
       null,
@@ -14,8 +19,8 @@ export class AuthService {
         params: {
           grant_type: 'authorization_code',
           code,
-          client_id: 'LINKEDIN_CLIENT_ID',
-          client_secret: 'LINKEDIN_CLIENT_SECRET',
+          client_id: clientId,
+          client_secret: clientSecret,
           redirect_uri: 'http://localhost:3000/auth/linkedin/callback',
         },
       },

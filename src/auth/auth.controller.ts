@@ -17,7 +17,7 @@ export class AuthController {
     );
 
     const { access_token, expires_in } = tokenResponse.data;
-
+    //TODO
     res.send('LinkedIn callback successful!');
   }
 }
