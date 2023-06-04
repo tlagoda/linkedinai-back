@@ -11,7 +11,8 @@ export class PostsController {
   }
 
   @Post('share')
-  async share(@Body() postContent: SharePostDto) {
-    const response = await this.postsService.shareOnLinkedIn(postContent);
+  async share(@Body() content: SharePostDto) {
+    const response = await this.postsService.shareOnLinkedIn(content);
+    return response;
   }
 }

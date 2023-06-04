@@ -34,9 +34,9 @@ export class PostsService {
     }
   }
 
-  async shareOnLinkedIn(postContent: SharePostDto) {
+  async shareOnLinkedIn(content: SharePostDto) {
     const shareContent = {
-      author: `urn:li:person:${globalVariable.personURN}`,
+      author: `urn:li:person:hFn5WVYXgu`,
       lifecycleState: 'PUBLISHED',
       specificContent: {
         'com.linkedin.ugc.ShareContent': {
@@ -62,8 +62,7 @@ export class PostsService {
           },
         },
       );
-
-      console.log('Share posted successfully:', response.data);
+      return response;
     } catch (error) {
       console.error('Error posting share:', error);
     }

@@ -17,14 +17,10 @@ export class AuthController {
       code.toString(),
     );
 
-    const {
-      access_token: accessToken,
-      expires_in: expiresIn,
-      person_urn: personURN,
-    } = tokenResponse.data;
+    const { access_token: accessToken, expires_in: expiresIn } =
+      tokenResponse.data;
     globalVariable.accessToken = accessToken;
     globalVariable.expiresIn = expiresIn;
-    globalVariable.personURN = personURN;
     //TODO
     res.send('LinkedIn callback successful!');
   }
