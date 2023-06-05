@@ -27,10 +27,7 @@ export class AuthController {
 
       globalVariable.userId = userInformations.data.id;
 
-      res.status(200).json({
-        message: 'LinkedIn callback successful!',
-        user: userInformations,
-      });
+      res.redirect('http://localhost:5173/');
     } catch (error) {
       console.error('Error during LinkedIn callback:', error);
       res.status(500).json({
