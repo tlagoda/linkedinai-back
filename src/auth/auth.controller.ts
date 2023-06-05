@@ -9,23 +9,33 @@ export class AuthController {
 
   @Get('linkedin/callback')
   async linkedinRedirect(@Req() req: Request, @Res() res: Response) {
-    const { code, state } = req.query;
+    try {
+      const { code, state } = req.query;
 
-    // Swap code for access token
-    const tokenResponse = await this.authService.getLinkedInToken(
-      code.toString(),
-    );
+      // Swap code for access token
+      const tokenResponse = await this.authService.getLinkedInToken(
+        code.toString(),
+      );
 
-    const { access_token: accessToken, expires_in: expiresIn } =
-      tokenResponse.data;
-    globalVariable.accessToken = accessToken;
-    globalVariable.expiresIn = expiresIn;
+      const { access_token: accessToken, expires_in: expiresIn } =
+        tokenResponse.data;
+      globalVariable.accessToken = accessToken;
+      globalVariable.expiresIn = expiresIn;
 
-    const userInformations =
-      await this.authService.getLinkedInUserInformations();
+      const userInformations =
+        await this.authService.getLinkedInUserInformations();
 
-    globalVariable.userId = userInformations.data.id;
+      globalVariable.userId = userInformations.data.id;
 
-    res.send('LinkedIn callback successful!');
+      res.status(200).json({
+        message: 'LinkedIn callback successful!',
+        user: userInformations,
+      });
+    } catch (error) {
+      console.error('Error during LinkedIn callback:', error);
+      res.status(500).json({
+        message: 'An error occurred during LinkedIn callback',
+      });
+    }
   }
 }

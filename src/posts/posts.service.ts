@@ -24,8 +24,8 @@ export class PostsService {
       const response = await this.openai.createCompletion({
         model: 'text-davinci-003',
         prompt: prompt1,
-        max_tokens: 500,
-        temperature: 0.8,
+        max_tokens: 1000,
+        temperature: 0.5,
         n: 1,
       });
 
