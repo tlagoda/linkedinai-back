@@ -22,7 +22,7 @@ export class AuthService {
           code,
           client_id: clientId,
           client_secret: clientSecret,
-          redirect_uri: 'http://localhost:5000/auth/linkedin/callback',
+          redirect_uri: 'http://localhost:8888/auth/linkedin/callback',
           scope: 'r_liteprofile r_emailaddress',
         },
       },
