@@ -59,17 +59,9 @@ export class AuthService {
 
   async updateUserLinkedInAuthorization(uid: string, authorized: boolean) {
     try {
-      const usersRef = db.collection('users');
-      const snapshot = await usersRef.where('userId', '==', uid).get();
+      const userRef = db.collection('users').doc(uid);
 
-      if (snapshot.empty) {
-        console.log('No matching documents.');
-        return;
-      }
-
-      snapshot.forEach((doc) => {
-        doc.ref.set({ hasAuthorizedLinkedIn: authorized }, { merge: true });
-      });
+      await userRef.set({ hasAuthorizedLinkedIn: authorized }, { merge: true });
     } catch (error) {
       console.error('Error updating user authorization:', error);
       throw error;
