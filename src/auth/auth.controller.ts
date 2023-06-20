@@ -26,12 +26,15 @@ export class AuthController {
         await this.authService.getLinkedInUserInformations();
 
       globalVariable.userId = userInformations.data.id;
-
+      await this.authService.updateUserLinkedInAuthorization(
+        state as string,
+        true,
+      );
       res.redirect('http://localhost:3000/generate');
     } catch (error) {
       console.error('Error during LinkedIn callback:', error);
       res.status(500).json({
-        message: 'An error occurred during LinkedIn callback',
+        message: 'An error occurred during LinkedIn authorization',
       });
     }
   }

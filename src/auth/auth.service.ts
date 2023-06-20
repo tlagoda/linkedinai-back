@@ -2,6 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { globalVariable } from 'src/global/global';
+import * as admin from 'firebase-admin';
+import * as serviceAccount from '../firebase-config.json';
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+});
+
+const db = admin.firestore();
 
 @Injectable()
 export class AuthService {
@@ -45,6 +53,25 @@ export class AuthService {
         "Erreur lors de l'obtention des informations de l'utilisateur LinkedIn:",
         error,
       );
+      throw error;
+    }
+  }
+
+  async updateUserLinkedInAuthorization(uid: string, authorized: boolean) {
+    try {
+      const usersRef = db.collection('users');
+      const snapshot = await usersRef.where('userId', '==', uid).get();
+
+      if (snapshot.empty) {
+        console.log('No matching documents.');
+        return;
+      }
+
+      snapshot.forEach((doc) => {
+        doc.ref.set({ hasAuthorizedLinkedIn: authorized }, { merge: true });
+      });
+    } catch (error) {
+      console.error('Error updating user authorization:', error);
       throw error;
     }
   }
