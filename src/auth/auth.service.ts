@@ -1,19 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { FirebaseService } from './../firebase/firebase.service';
+import { Injectable, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { globalVariable } from 'src/global/global';
 import * as admin from 'firebase-admin';
-import * as serviceAccount from '../firebase-config.json';
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-});
-
-const db = admin.firestore();
 
 @Injectable()
 export class AuthService {
-  constructor(private configService: ConfigService) {}
+  constructor(
+    private configService: ConfigService,
+    private firebaseService: FirebaseService,
+  ) {}
 
   async getLinkedInToken(code: string) {
     const clientId = this.configService.get<string>('LINKEDIN_CLIENT_ID');
@@ -59,6 +56,7 @@ export class AuthService {
 
   async updateUserLinkedInAuthorization(uid: string, authorized: boolean) {
     try {
+      const db = this.firebaseService.getFirestore();
       const userRef = db.collection('users').doc(uid);
 
       await userRef.set({ hasAuthorizedLinkedIn: authorized }, { merge: true });

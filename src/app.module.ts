@@ -7,11 +7,16 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { FirebaseController } from './firebase/firebase.controller';
-
+import { FirebaseService } from './firebase/firebase.service';
 
 @Module({
   imports: [ConfigModule.forRoot()],
-  controllers: [AppController, PostsController, AuthController, FirebaseController],
-  providers: [AppService, PostsService, AuthService],
+  controllers: [
+    AppController,
+    PostsController,
+    AuthController,
+    FirebaseController,
+  ],
+  providers: [AppService, PostsService, AuthService, FirebaseService],
 })
 export class AppModule {}
