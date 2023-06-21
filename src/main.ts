@@ -10,6 +10,6 @@ async function bootstrap() {
     methods: 'GET,POST',
   });
 
-  await app.listen(8888);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
