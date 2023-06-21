@@ -14,6 +14,7 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
   @Get('generate')
   async generate(@Query('prompt') prompt: string) {
+    return 'Blocked';
     return await this.postsService.generate(prompt);
   }
 
