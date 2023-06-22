@@ -27,7 +27,8 @@ export class AuthService {
           code,
           client_id: clientId,
           client_secret: clientSecret,
-          redirect_uri: 'http://localhost:8888/auth/linkedin/callback',
+          redirect_uri:
+            'https://linkedinai-back-357fcb308ceb.herokuapp.com/auth/linkedin/callback',
           scope: 'r_liteprofile r_emailaddress',
         },
       },
