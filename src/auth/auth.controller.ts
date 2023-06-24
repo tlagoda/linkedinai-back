@@ -30,7 +30,7 @@ export class AuthController {
         state as string,
         true,
       );
-      res.redirect('http://tldl.fr/generate');
+      res.status(200).redirect('http://tldl.fr/generate');
     } catch (error) {
       console.error('Error during LinkedIn callback:', error);
       res.status(500).json({

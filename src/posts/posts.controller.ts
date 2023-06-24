@@ -1,3 +1,4 @@
+import { response } from 'express';
 import { SharePostDto } from './dto/posts-share.dto';
 import { PostsService } from './posts.service';
 import {
@@ -14,8 +15,8 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
   @Get('generate')
   async generate(@Query('prompt') prompt: string) {
-    return 'blocked';
-    return await this.postsService.generate(prompt);
+    return { message: 'Currently unavailable' };
+    // return await this.postsService.generate(prompt);
   }
 
   @Post('share')
