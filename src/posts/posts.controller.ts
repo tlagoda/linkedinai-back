@@ -1,4 +1,3 @@
-import { response } from 'express';
 import { SharePostDto } from './dto/posts-share.dto';
 import { PostsService } from './posts.service';
 import {

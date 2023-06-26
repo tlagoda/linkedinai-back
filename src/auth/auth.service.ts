@@ -3,10 +3,12 @@ import { Injectable, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { globalVariable } from 'src/global/global';
-import * as admin from 'firebase-admin';
+import { Logger } from '@nestjs/common';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private configService: ConfigService,
     private firebaseService: FirebaseService,
@@ -17,6 +19,8 @@ export class AuthService {
     const clientSecret = this.configService.get<string>(
       'LINKEDIN_CLIENT_SECRET',
     );
+
+    this.logger.log('Retrieving access token from LinkedIn...');
 
     const tokenResponse = await axios.post(
       'https://www.linkedin.com/oauth/v2/accessToken',
@@ -38,6 +42,8 @@ export class AuthService {
   }
 
   async getLinkedInUserInformations() {
+    this.logger.log('Retrieving user informations from LinkedIn...');
+
     try {
       const response = await axios.get('https://api.linkedin.com/v2/me', {
         headers: {
@@ -61,6 +67,8 @@ export class AuthService {
       const userRef = db.collection('users').doc(uid);
 
       await userRef.set({ hasAuthorizedLinkedIn: authorized }, { merge: true });
+
+      this.logger.log('LinkedIn Authorization correctly updated...');
     } catch (error) {
       console.error('Error updating user authorization:', error);
       throw error;
