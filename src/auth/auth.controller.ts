@@ -30,6 +30,7 @@ export class AuthController {
         await this.authService.getLinkedInUserInformations(accessToken);
 
       await this.usersService.updateUser(uid as string, {
+        linkedInId: userInformations.data.id,
         hasAuthorizedLinkedIn: true,
         linkedInToken: accessToken,
         linkedInTokenExpiresAt: expirationDate,
