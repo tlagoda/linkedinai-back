@@ -1,20 +1,19 @@
 import { AuthService } from './auth.service';
 import { Controller, Get, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { globalVariable } from '../global/global';
-import { FirebaseService } from 'src/firebase/firebase.service';
+import { UsersService } from 'src/users/users.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly firebaseService: FirebaseService,
+    private readonly usersService: UsersService,
   ) {}
 
   @Get('linkedin/callback')
   async linkedinRedirect(@Req() req: Request, @Res() res: Response) {
     try {
-      const { code, state } = req.query;
+      const { code, state: uid } = req.query;
 
       // Swap code for access token
       const tokenResponse = await this.authService.getLinkedInToken(
@@ -25,23 +24,13 @@ export class AuthController {
         tokenResponse.data;
 
       const userInformations =
-        await this.authService.getLinkedInUserInformations();
+        await this.authService.getLinkedInUserInformations(accessToken);
 
-      await this.authService.updateUserLinkedInAuthorization(
-        state as string,
-        true,
-      );
-
-      const db = this.firebaseService.getFirestore();
-      const userId = userInformations.data.id;
-      const userRef = db.collection('users').doc(userId);
-      await userRef.set(
-        {
-          accessToken,
-          expiresIn,
-        },
-        { merge: true },
-      );
+      await this.usersService.updateUser(uid as string, {
+        hasAuthorizedLinkedIn: true,
+        accessToken,
+        expiresIn,
+      });
 
       res.status(200).redirect('http://tldl.fr/generate');
     } catch (error) {

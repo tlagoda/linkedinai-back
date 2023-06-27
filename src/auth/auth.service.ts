@@ -31,23 +31,22 @@ export class AuthService {
           code,
           client_id: clientId,
           client_secret: clientSecret,
-          redirect_uri:
-            'https://linkedinai-back-357fcb308ceb.herokuapp.com/auth/linkedin/callback',
+          redirect_uri: 'http://localhost:8888/auth/linkedin/callback',
           scope: 'r_liteprofile r_emailaddress',
         },
       },
     );
-
+    //https://linkedinai-back-357fcb308ceb.herokuapp.com/auth/linkedin/callback'
     return tokenResponse;
   }
 
-  async getLinkedInUserInformations() {
+  async getLinkedInUserInformations(accessToken: string) {
     this.logger.log('Retrieving user informations from LinkedIn...');
 
     try {
       const response = await axios.get('https://api.linkedin.com/v2/me', {
         headers: {
-          Authorization: `Bearer ${globalVariable.accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
 
