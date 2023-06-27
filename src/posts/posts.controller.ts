@@ -1,8 +1,7 @@
-import { FirebaseService } from './../firebase/firebase.service';
-import { AuthService } from './../auth/auth.service';
 import { AuthGuard } from './../guards/auth.guard';
 import { SharePostDto } from './dto/posts-share.dto';
 import { PostsService } from './posts.service';
+import { Req } from '@nestjs/common';
 import {
   Body,
   Controller,
@@ -12,14 +11,11 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { Request } from 'express';
 
 @Controller('posts')
 export class PostsController {
-  constructor(
-    private readonly postsService: PostsService,
-    private readonly authService: AuthService,
-    private readonly firebaseService: FirebaseService,
-  ) {}
+  constructor(private readonly postsService: PostsService) {}
 
   @Get('generate')
   @UseGuards(AuthGuard)
@@ -30,9 +26,13 @@ export class PostsController {
 
   @Post('share')
   @UseGuards(AuthGuard)
-  async share(@Body() postContent: SharePostDto) {
+  async share(@Req() req: Request, @Body() postContent: SharePostDto) {
+    const token = req.headers.authorization?.split('Bearer ')[1];
     try {
-      const response = await this.postsService.shareOnLinkedIn(postContent);
+      const response = await this.postsService.shareOnLinkedIn(
+        postContent,
+        token,
+      );
       return response;
     } catch (error) {
       console.error('Error while sharing on LinkedIn:', error);

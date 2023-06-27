@@ -36,4 +36,18 @@ export class FirebaseService {
   getAuth(): admin.auth.Auth {
     return this.auth;
   }
+
+  async updateDocInCollection(
+    collection: string,
+    uid: string,
+    data: Record<string, any>,
+  ): Promise<void> {
+    try {
+      const docRef = this.getFirestore().collection(collection).doc(uid);
+      await docRef.set(data, { merge: true });
+    } catch (error) {
+      console.error(`Error while updating collection ${collection}:`, error);
+      throw error;
+    }
+  }
 }

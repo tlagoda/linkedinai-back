@@ -8,7 +8,7 @@ export class UsersService {
 
   constructor(private firebaseService: FirebaseService) {}
 
-  async updateUser(uid: string, data: any): Promise<void> {
+  async updateUser(uid: string, data: Record<string, any>): Promise<void> {
     try {
       const userRef = this.firebaseService
         .getFirestore()

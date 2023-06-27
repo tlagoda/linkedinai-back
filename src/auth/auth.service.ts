@@ -59,25 +59,11 @@ export class AuthService {
     }
   }
 
-  async updateUserLinkedInAuthorization(uid: string, authorized: boolean) {
-    try {
-      const db = this.firebaseService.getFirestore();
-      const userRef = db.collection('users').doc(uid);
-
-      await userRef.set({ hasAuthorizedLinkedIn: authorized }, { merge: true });
-
-      this.logger.log('LinkedIn Authorization correctly updated...');
-    } catch (error) {
-      console.error('Error updating user authorization:', error);
-      throw error;
-    }
-  }
-
   async verifyLinkedInToken(uid: string): Promise<boolean> {
     try {
       const userRef = this.firebaseService
         .getFirestore()
-        .collection('users')
+        .collection('linkedin')
         .doc(uid);
       const snapshot = await userRef.get();
       const userData = snapshot.data();
@@ -124,4 +110,32 @@ export class AuthService {
       throw error;
     }
   }
+
+  async getLinkedInTokenFromFirebaseToken(
+    firebaseToken: string,
+  ): Promise<string> {
+    try {
+      const { uid } = await this.firebaseService
+        .getAuth()
+        .verifyIdToken(firebaseToken);
+
+      const linkedinRef = this.firebaseService
+        .getFirestore()
+        .collection('linkedin')
+        .doc(uid);
+
+      const snapshot = await linkedinRef.get();
+      const linkedinData = snapshot.data();
+
+      if (!linkedinData || !linkedinData.linkedInToken) {
+        throw new Error('No such user found, or no suck linkedin token found.');
+      }
+
+      return linkedinData.linkedInToken;
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
+
+  async;
 }

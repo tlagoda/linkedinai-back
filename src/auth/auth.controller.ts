@@ -2,12 +2,14 @@ import { AuthService } from './auth.service';
 import { Controller, Get, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { UsersService } from 'src/users/users.service';
+import { FirebaseService } from 'src/firebase/firebase.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly usersService: UsersService,
+    private readonly firebaseService: FirebaseService,
   ) {}
 
   @Get('linkedin/callback')
@@ -35,6 +37,17 @@ export class AuthController {
         linkedInToken: accessToken,
         linkedInTokenExpiresAt: expirationDate,
       });
+
+      await this.firebaseService.updateDocInCollection(
+        'linkedin',
+        uid as string,
+        {
+          linkedInId: userInformations.data.id,
+          hasAuthorizedLinkedIn: true,
+          linkedInToken: accessToken,
+          linkedInTokenExpiresAt: expirationDate,
+        },
+      );
 
       res.status(200).redirect('http://tldl.fr/generate');
     } catch (error) {

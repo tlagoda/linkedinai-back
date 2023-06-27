@@ -1,15 +1,18 @@
+import { FirebaseService } from 'src/firebase/firebase.service';
 import { SharePostDto } from './dto/posts-share.dto';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Configuration, OpenAIApi } from 'openai';
 import axios from 'axios';
-import { globalVariable } from 'src/global/global';
 
 @Injectable()
 export class PostsService {
   private openai: OpenAIApi;
 
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService,
+    private firebaseService: FirebaseService,
+  ) {
     const apiKey = this.configService.get<string>('OPENAI_API_KEY');
     const configuration = new Configuration({
       organization: 'org-oyGJgWrLh8lYCJF01HvjlHYw',
@@ -34,31 +37,44 @@ export class PostsService {
     }
   }
 
-  async shareOnLinkedIn(postContent: SharePostDto) {
-    const shareContent = {
-      author: `urn:li:person:${globalVariable.userId}`,
-      lifecycleState: 'PUBLISHED',
-      specificContent: {
-        'com.linkedin.ugc.ShareContent': {
-          shareCommentary: {
-            text: postContent.content,
-          },
-          shareMediaCategory: 'NONE',
-        },
-      },
-      visibility: {
-        'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC',
-      },
-    };
-
+  async shareOnLinkedIn(postContent: SharePostDto, token: string) {
     try {
+      const { uid } = await this.firebaseService.getAuth().verifyIdToken(token);
+      const linkedinRef = this.firebaseService
+        .getFirestore()
+        .collection('linkedin')
+        .doc(uid);
+
+      const snapshot = await linkedinRef.get();
+      const linkedinData = snapshot.data();
+
+      if (!linkedinData || !linkedinData.linkedInId) {
+        throw new Error('Invalid linkedIn token');
+      }
+
+      const shareContent = {
+        author: `urn:li:person:${linkedinData.linkedInId}`,
+        lifecycleState: 'PUBLISHED',
+        specificContent: {
+          'com.linkedin.ugc.ShareContent': {
+            shareCommentary: {
+              text: postContent.content,
+            },
+            shareMediaCategory: 'NONE',
+          },
+        },
+        visibility: {
+          'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC',
+        },
+      };
+
       const response = await axios.post(
         'https://api.linkedin.com/v2/ugcPosts',
         shareContent,
         {
           headers: {
             'X-Restli-Protocol-Version': '2.0.0',
-            Authorization: `Bearer ${globalVariable.accessToken}`,
+            Authorization: `Bearer ${linkedinData.linkedInToken}`,
           },
         },
       );
