@@ -1,3 +1,5 @@
+import { FirebaseService } from './../firebase/firebase.service';
+import { AuthService } from './../auth/auth.service';
 import { AuthGuard } from './../guards/auth.guard';
 import { SharePostDto } from './dto/posts-share.dto';
 import { PostsService } from './posts.service';
@@ -13,7 +15,11 @@ import {
 
 @Controller('posts')
 export class PostsController {
-  constructor(private readonly postsService: PostsService) {}
+  constructor(
+    private readonly postsService: PostsService,
+    private readonly authService: AuthService,
+    private readonly firebaseService: FirebaseService,
+  ) {}
 
   @Get('generate')
   @UseGuards(AuthGuard)

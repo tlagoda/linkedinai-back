@@ -23,13 +23,16 @@ export class AuthController {
       const { access_token: accessToken, expires_in: expiresIn } =
         tokenResponse.data;
 
+      const now = new Date();
+      const expirationDate = new Date(now.getTime() + expiresIn * 1000);
+
       const userInformations =
         await this.authService.getLinkedInUserInformations(accessToken);
 
       await this.usersService.updateUser(uid as string, {
         hasAuthorizedLinkedIn: true,
-        accessToken,
-        expiresIn,
+        linkedInToken: accessToken,
+        linkedInTokenExpiresAt: expirationDate,
       });
 
       res.status(200).redirect('http://tldl.fr/generate');

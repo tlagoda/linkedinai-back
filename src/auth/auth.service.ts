@@ -73,4 +73,35 @@ export class AuthService {
       throw error;
     }
   }
+
+  async verifyLinkedInToken(uid: string): Promise<boolean> {
+    try {
+      const userRef = this.firebaseService
+        .getFirestore()
+        .collection('users')
+        .doc(uid);
+      const snapshot = await userRef.get();
+      const userData = snapshot.data();
+
+      if (
+        !userData ||
+        !userData.linkedInToken ||
+        !userData.linkedInTokenExpiresAt
+      ) {
+        return false; // Token or expiration date is missing
+      }
+
+      const linkedInTokenExpiresAt = userData.linkedInTokenExpiresAt;
+      const now = new Date().getTime();
+
+      if (now >= linkedInTokenExpiresAt) {
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error verifying LinkedIn token:', error);
+      throw error;
+    }
+  }
 }
