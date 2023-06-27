@@ -2,7 +2,6 @@ import { FirebaseService } from './../firebase/firebase.service';
 import { Injectable, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
-import { globalVariable } from 'src/global/global';
 import { Logger } from '@nestjs/common';
 
 @Injectable()
@@ -101,6 +100,27 @@ export class AuthService {
       return true;
     } catch (error) {
       console.error('Error verifying LinkedIn token:', error);
+      throw error;
+    }
+  }
+
+  async refreshLinkedInToken(uid: string): Promise<string> {
+    try {
+      const userRef = this.firebaseService
+        .getFirestore()
+        .collection('users')
+        .doc(uid);
+
+      // TODO: refrash linkedin token
+      return;
+      const refreshedToken = 'NEW_LINKEDIN_TOKEN';
+      await userRef.update({
+        linkedInToken: refreshedToken,
+      });
+
+      return refreshedToken;
+    } catch (error) {
+      console.error('Error refreshing LinkedIn token:', error);
       throw error;
     }
   }
