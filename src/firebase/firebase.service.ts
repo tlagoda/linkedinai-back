@@ -6,6 +6,7 @@ import { Logger } from '@nestjs/common';
 @Injectable()
 export class FirebaseService {
   private db: FirebaseFirestore.Firestore;
+  private auth: admin.auth.Auth;
   private readonly logger = new Logger(FirebaseService.name);
 
   constructor(private configService: ConfigService) {
@@ -25,9 +26,14 @@ export class FirebaseService {
     this.logger.log('Firebase app has been initialized...');
 
     this.db = admin.firestore();
+    this.auth = admin.auth();
   }
 
   getFirestore(): FirebaseFirestore.Firestore {
     return this.db;
+  }
+
+  getAuth(): admin.auth.Auth {
+    return this.auth;
   }
 }
