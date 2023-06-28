@@ -136,6 +136,4 @@ export class AuthService {
       this.logger.error(error);
     }
   }
-
-  async;
 }

@@ -16,7 +16,7 @@ export class UsersService {
         .doc(uid);
       await userRef.set(data, { merge: true });
     } catch (error) {
-      console.error('Error updating user:', error);
+      this.logger.error('Error updating user:', error);
       throw error;
     }
   }
