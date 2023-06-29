@@ -30,12 +30,13 @@ export class AuthService {
           code,
           client_id: clientId,
           client_secret: clientSecret,
-          redirect_uri: 'http://localhost:8888/auth/linkedin/callback',
+          redirect_uri:
+            'https://linkedinai-back-357fcb308ceb.herokuapp.com/auth/linkedin/callback',
           scope: 'r_liteprofile r_emailaddress',
         },
       },
     );
-    //https://linkedinai-back-357fcb308ceb.herokuapp.com/auth/linkedin/callback'
+
     return tokenResponse;
   }
 
@@ -55,6 +56,38 @@ export class AuthService {
         "Erreur lors de l'obtention des informations de l'utilisateur LinkedIn:",
         error,
       );
+      throw error;
+    }
+  }
+
+  async getLinkedInProfilePicture(accessToken: string): Promise<string> {
+    this.logger.log('Retrieving profile picture from LinkedIn...');
+
+    try {
+      const response = await axios.get(
+        'https://api.linkedin.com/v2/me?projection=(profilePicture(displayImage~:playableStreams))',
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+
+      // Get the elements array from the data
+      const pictureData =
+        response.data.profilePicture['displayImage~'].elements;
+
+      // Filter for the image with the highest resolution
+      const profilePicture = pictureData.reduce((prev, current) => {
+        return prev.width * prev.height > current.width * current.height
+          ? prev
+          : current;
+      });
+
+      // Return the identifier of the image, which is the URL
+      return profilePicture.identifiers[0].identifier;
+    } catch (error) {
+      console.error('Error while retrieving LinkedIn profile picture:', error);
       throw error;
     }
   }
