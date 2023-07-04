@@ -30,6 +30,12 @@ export class AuthController {
 
       const userInformations =
         await this.authService.getLinkedInUserInformations(accessToken);
+
+      await this.firebaseService.updateDocInCollection('users', uid as string, {
+        firstName: userInformations.data.localizedFirstName,
+        lastName: userInformations.data.localizedLastName,
+      });
+
       const linkedInProfilePictureUrl =
         await this.authService.getLinkedInProfilePicture(accessToken);
 
