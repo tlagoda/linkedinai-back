@@ -45,4 +45,47 @@ export class LinkedinService {
 
     return response.data;
   }
+
+  async createImageShare(personUrn: string, text: string, imageAsset: string) {
+    const shareContent = {
+      author: `urn:li:person:${personUrn}`,
+      lifecycleState: 'PUBLISHED',
+      specificContent: {
+        'com.linkedin.ugc.ShareContent': {
+          shareCommentary: {
+            text,
+          },
+          shareMediaCategory: 'IMAGE',
+          media: [
+            {
+              status: 'READY',
+              description: {
+                text: 'Description of the image',
+              },
+              media: imageAsset,
+              title: {
+                text: 'Title of the image',
+              },
+            },
+          ],
+        },
+      },
+      visibility: {
+        'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC',
+      },
+    };
+
+    const response = await axios.post(
+      'https://api.linkedin.com/v2/ugcPosts',
+      shareContent,
+      {
+        headers: {
+          Authorization: `Bearer your_access_token`,
+          'X-Restli-Protocol-Version': '2.0.0',
+        },
+      },
+    );
+
+    return response.data;
+  }
 }
