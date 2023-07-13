@@ -9,6 +9,7 @@ import { AuthService } from './auth/auth.service';
 import { FirebaseController } from './firebase/firebase.controller';
 import { FirebaseService } from './firebase/firebase.service';
 import { UsersService } from './users/users.service';
+import { LinkedinService } from './linkedin/linkedin.service';
 
 @Module({
   imports: [ConfigModule.forRoot()],
@@ -24,6 +25,7 @@ import { UsersService } from './users/users.service';
     AuthService,
     FirebaseService,
     UsersService,
+    LinkedinService,
   ],
 })
 export class AppModule {}
