@@ -77,7 +77,7 @@ export class PostsService {
         binaryFiles.push(file.buffer);
       }
 
-      const r = await this.linkedinService.uploadImage(
+      const r = await this.linkedinService.uploadMedia(
         uploadUrl,
         binaryFiles[0],
         linkedinAccessToken,

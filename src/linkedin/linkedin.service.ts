@@ -58,9 +58,11 @@ export class LinkedinService {
     }
   }
 
-  async registerImage(personUrn: string, token: string) {
+  async registerImage(personUrn: string, token: string, isVideo = false) {
     const registerUploadRequest = {
-      recipes: ['urn:li:digitalmediaRecipe:feedshare-image'],
+      recipes: [
+        `urn:li:digitalmediaRecipe:feedshare-${isVideo ? 'video' : 'image'}`,
+      ],
       owner: `urn:li:person:${personUrn}`,
       serviceRelationships: [
         {
@@ -84,7 +86,7 @@ export class LinkedinService {
     return response.data;
   }
 
-  async uploadImage(
+  async uploadMedia(
     uploadUrl: string,
     imageBuffer: Buffer,
     accessToken: string,
@@ -106,6 +108,7 @@ export class LinkedinService {
     accessToken: string,
     text: string,
     imageAsset: string,
+    isVideo = false,
   ) {
     const shareContent = {
       author: `urn:li:person:${personUrn}`,
@@ -115,7 +118,7 @@ export class LinkedinService {
           shareCommentary: {
             text,
           },
-          shareMediaCategory: 'IMAGE',
+          shareMediaCategory: isVideo ? 'VIDEO' : 'IMAGE',
           media: [
             {
               status: 'READY',
