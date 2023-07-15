@@ -50,4 +50,30 @@ export class FirebaseService {
       throw error;
     }
   }
+
+  async getDoc(
+    collection: string,
+    docId: string,
+  ): Promise<
+    FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.DocumentData>
+  > {
+    try {
+      const docRef = this.getFirestore().collection(collection).doc(docId);
+      const docSnapshot = await docRef.get();
+
+      if (docSnapshot.exists) {
+        return docSnapshot;
+      } else {
+        throw new Error(
+          `Document '${docId}' does not exist in collection '${collection}'`,
+        );
+      }
+    } catch (error) {
+      console.error(
+        `Error while retrieving document '${docId}' from collection '${collection}':`,
+        error,
+      );
+      throw error;
+    }
+  }
 }
