@@ -49,7 +49,25 @@ export class PostsService {
       if (!files?.length) {
         return await this.linkedinService.share(postContent, token);
       }
+
       // share with media
+      const auth = await this.firebaseService.getAuth();
+      const decodedToken = await auth.verifyIdToken(token);
+
+      const linkedinUserInformations = await this.firebaseService.getDoc(
+        'linkedin',
+        decodedToken.uid,
+      );
+
+      const personUrn = linkedinUserInformations.data().personUrn;
+      const linkedinAccessToken = linkedinUserInformations.data().linkedInToken;
+
+      const resp = await this.linkedinService.registerImage(
+        personUrn,
+        linkedinAccessToken,
+      );
+
+      console.log(resp);
       const binaryFiles = [];
       for (const file of files) {
         binaryFiles.push(file.buffer);

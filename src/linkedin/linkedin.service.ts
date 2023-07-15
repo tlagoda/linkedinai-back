@@ -59,7 +59,7 @@ export class LinkedinService {
     }
   }
 
-  async registerImage(personUrn: string) {
+  async registerImage(personUrn: string, token: string) {
     const registerUploadRequest = {
       recipes: ['urn:li:digitalmediaRecipe:feedshare-image'],
       owner: `urn:li:person:${personUrn}`,
@@ -76,7 +76,7 @@ export class LinkedinService {
       { registerUploadRequest },
       {
         headers: {
-          Authorization: `Bearer your_access_token`,
+          Authorization: `Bearer ${token}`,
           'X-Restli-Protocol-Version': '2.0.0',
         },
       },
