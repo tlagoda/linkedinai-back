@@ -39,11 +39,20 @@ export class PostsService {
     }
   }
 
-  async shareOnLinkedIn(postContent: SharePostDto, token: string, files?: any) {
+  async shareOnLinkedIn(
+    postContent: SharePostDto,
+    token: string,
+    files?: Express.Multer.File[] | null,
+  ) {
     try {
       // share with just text
       if (!files?.length) {
-        await this.linkedinService.share(postContent, token);
+        return await this.linkedinService.share(postContent, token);
+      }
+      // share with media
+      const binaryFiles = [];
+      for (const file of files) {
+        binaryFiles.push(file.buffer);
       }
     } catch (error) {
       console.error('Error posting share:', error);

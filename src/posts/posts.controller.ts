@@ -34,12 +34,9 @@ export class PostsController {
   async share(
     @Headers('authorization') authHeader: string,
     @Body('content') content: string,
-    @UploadedFiles() files?,
+    @UploadedFiles() files?: Express.Multer.File[],
   ) {
     const token = authHeader?.split('Bearer ')[1];
-    console.log(token);
-    console.log('Content:', content);
-    console.log('Files:', files);
 
     try {
       const response = await this.postsService.shareOnLinkedIn(
