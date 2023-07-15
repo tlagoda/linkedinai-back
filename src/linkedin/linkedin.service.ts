@@ -3,7 +3,6 @@ import { FirebaseService } from './../firebase/firebase.service';
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import fs from 'fs';
-import path from 'path';
 
 @Injectable()
 export class LinkedinService {
@@ -85,12 +84,14 @@ export class LinkedinService {
     return response.data;
   }
 
-  async uploadImage(uploadUrl: string, imagePath: string) {
-    const imageData = fs.readFileSync(path.resolve(imagePath));
-
-    const response = await axios.post(uploadUrl, imageData, {
+  async uploadImage(
+    uploadUrl: string,
+    imageBuffer: Buffer,
+    accessToken: string,
+  ) {
+    const response = await axios.post(uploadUrl, imageBuffer, {
       headers: {
-        Authorization: `Bearer your_access_token`,
+        Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/octet-stream',
       },
       maxContentLength: Infinity,
@@ -100,7 +101,12 @@ export class LinkedinService {
     return response.data;
   }
 
-  async createImageShare(personUrn: string, text: string, imageAsset: string) {
+  async createImageShare(
+    personUrn: string,
+    accessToken: string,
+    text: string,
+    imageAsset: string,
+  ) {
     const shareContent = {
       author: `urn:li:person:${personUrn}`,
       lifecycleState: 'PUBLISHED',
@@ -134,7 +140,7 @@ export class LinkedinService {
       shareContent,
       {
         headers: {
-          Authorization: `Bearer your_access_token`,
+          Authorization: `Bearer ${accessToken}`,
           'X-Restli-Protocol-Version': '2.0.0',
         },
       },

@@ -70,13 +70,27 @@ export class PostsService {
         response.value.uploadMechanism[
           'com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest'
         ].uploadUrl;
-
-      
+      const asset = response.value.asset;
 
       const binaryFiles = [];
       for (const file of files) {
         binaryFiles.push(file.buffer);
       }
+
+      const r = await this.linkedinService.uploadImage(
+        uploadUrl,
+        binaryFiles[0],
+        linkedinAccessToken,
+      );
+
+      const uu = await this.linkedinService.createImageShare(
+        personUrn,
+        linkedinAccessToken,
+        'test',
+        asset,
+      );
+
+      console.log(uu);
     } catch (error) {
       console.error('Error posting share:', error);
     }
