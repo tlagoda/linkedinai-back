@@ -1,3 +1,4 @@
+import { LinkedinService } from './../linkedin/linkedin.service';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import { SharePostDto } from './dto/posts-share.dto';
 import { Injectable } from '@nestjs/common';
@@ -12,6 +13,7 @@ export class PostsService {
   constructor(
     private configService: ConfigService,
     private firebaseService: FirebaseService,
+    private linkedinService: LinkedinService,
   ) {
     const apiKey = this.configService.get<string>('OPENAI_API_KEY');
     const configuration = new Configuration({
@@ -37,49 +39,12 @@ export class PostsService {
     }
   }
 
-  async shareOnLinkedIn(postContent: SharePostDto, token: string) {
+  async shareOnLinkedIn(postContent: SharePostDto, token: string, files?: any) {
     try {
-      const { uid } = await this.firebaseService.getAuth().verifyIdToken(token);
-      const linkedinRef = this.firebaseService
-        .getFirestore()
-        .collection('linkedin')
-        .doc(uid);
-
-      const snapshot = await linkedinRef.get();
-      const linkedinData = snapshot.data();
-
-      if (!linkedinData || !linkedinData.linkedInId) {
-        throw new Error('Invalid linkedIn token');
+      // share with just text
+      if (!files?.length) {
+        await this.linkedinService.share(postContent, token);
       }
-
-      const shareContent = {
-        author: `urn:li:person:${linkedinData.linkedInId}`,
-        lifecycleState: 'PUBLISHED',
-        specificContent: {
-          'com.linkedin.ugc.ShareContent': {
-            shareCommentary: {
-              text: postContent.content,
-            },
-            shareMediaCategory: 'NONE',
-          },
-        },
-        visibility: {
-          'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC',
-        },
-      };
-
-      const response = await axios.post(
-        'https://api.linkedin.com/v2/ugcPosts',
-        shareContent,
-        {
-          headers: {
-            'X-Restli-Protocol-Version': '2.0.0',
-            Authorization: `Bearer ${linkedinData.linkedInToken}`,
-          },
-        },
-      );
-      const postId = response.data.id;
-      return { postId };
     } catch (error) {
       console.error('Error posting share:', error);
     }

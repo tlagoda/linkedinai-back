@@ -1,18 +1,18 @@
 import { LinkedinService } from './../linkedin/linkedin.service';
 import { AuthGuard } from './../guards/auth.guard';
-import { SharePostDto } from './dto/posts-share.dto';
 import { PostsService } from './posts.service';
-import { Req } from '@nestjs/common';
+import { Headers, InternalServerErrorException } from '@nestjs/common';
 import {
   Body,
   Controller,
   Get,
-  InternalServerErrorException,
   Post,
   Query,
   UseGuards,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
-import { Request } from 'express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('posts')
 export class PostsController {
@@ -30,20 +30,27 @@ export class PostsController {
 
   @Post('share')
   @UseGuards(AuthGuard)
-  async share(@Req() req: Request, @Body() postContent: SharePostDto) {
+  @UseInterceptors(FilesInterceptor('files'))
+  async share(
+    @Headers('authorization') authHeader: string,
+    @Body('content') content: string,
+    @UploadedFiles() files?,
+  ) {
+    const token = authHeader?.split('Bearer ')[1];
+    console.log(token);
+    console.log('Content:', content);
+    console.log('Files:', files);
 
-
-
-    //   const token = req.headers.authorization?.split('Bearer ')[1];
-    //   try {
-    //     const response = await this.postsService.shareOnLinkedIn(
-    //       postContent,
-    //       token,
-    //     );
-    //     return response;
-    //   } catch (error) {
-    //     console.error('Error while sharing on LinkedIn:', error);
-    //     throw new InternalServerErrorException('Failed to share on LinkedIn');
-    //   }
+    try {
+      const response = await this.postsService.shareOnLinkedIn(
+        { content },
+        token,
+        files,
+      );
+      return response;
+    } catch (error) {
+      console.error('Error while sharing on LinkedIn:', error);
+      throw new InternalServerErrorException('Failed to share on LinkedIn');
+    }
   }
 }

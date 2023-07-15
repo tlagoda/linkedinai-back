@@ -1,6 +1,6 @@
 import { IsString, IsOptional, IsArray } from 'class-validator';
 
-export class CreatePostDto {
+export class SharePostDto {
   @IsString()
   readonly content: string;
 

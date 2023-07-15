@@ -1,3 +1,5 @@
+import { SharePostDto } from './../posts/dto/posts-share.dto';
+import { FirebaseService } from './../firebase/firebase.service';
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import fs from 'fs';
@@ -5,6 +7,58 @@ import path from 'path';
 
 @Injectable()
 export class LinkedinService {
+  constructor(private firebaseService: FirebaseService) {}
+
+  async share(postContent: SharePostDto, token: string) {
+    try {
+      console.log('in share');
+      return;
+      const { uid } = await this.firebaseService.getAuth().verifyIdToken(token);
+      const linkedinRef = this.firebaseService
+        .getFirestore()
+        .collection('linkedin')
+        .doc(uid);
+
+      const snapshot = await linkedinRef.get();
+      const linkedinData = snapshot.data();
+
+      if (!linkedinData || !linkedinData.linkedInId) {
+        throw new Error('Invalid linkedIn token');
+      }
+
+      const shareContent = {
+        author: `urn:li:person:${linkedinData.linkedInId}`,
+        lifecycleState: 'PUBLISHED',
+        specificContent: {
+          'com.linkedin.ugc.ShareContent': {
+            shareCommentary: {
+              text: postContent.content,
+            },
+            shareMediaCategory: 'NONE',
+          },
+        },
+        visibility: {
+          'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC',
+        },
+      };
+
+      const response = await axios.post(
+        'https://api.linkedin.com/v2/ugcPosts',
+        shareContent,
+        {
+          headers: {
+            'X-Restli-Protocol-Version': '2.0.0',
+            Authorization: `Bearer ${linkedinData.linkedInToken}`,
+          },
+        },
+      );
+      const postId = response.data.id;
+      return { postId };
+    } catch (error) {
+      console.error('Error posting share:', error);
+    }
+  }
+
   async registerImage(personUrn: string) {
     const registerUploadRequest = {
       recipes: ['urn:li:digitalmediaRecipe:feedshare-image'],
