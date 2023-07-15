@@ -51,7 +51,7 @@ export class PostsService {
       }
 
       // share with media
-      const auth = await this.firebaseService.getAuth();
+      const auth = this.firebaseService.getAuth();
       const decodedToken = await auth.verifyIdToken(token);
 
       const linkedinUserInformations = await this.firebaseService.getDoc(
@@ -62,12 +62,17 @@ export class PostsService {
       const personUrn = linkedinUserInformations.data().personUrn;
       const linkedinAccessToken = linkedinUserInformations.data().linkedInToken;
 
-      const resp = await this.linkedinService.registerImage(
+      const response = await this.linkedinService.registerImage(
         personUrn,
         linkedinAccessToken,
       );
+      const uploadUrl =
+        response.value.uploadMechanism[
+          'com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest'
+        ].uploadUrl;
 
-      console.log(resp);
+      
+
       const binaryFiles = [];
       for (const file of files) {
         binaryFiles.push(file.buffer);
