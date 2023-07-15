@@ -1,7 +1,13 @@
-import { IsDefined, IsString } from 'class-validator';
+import { IsString, IsOptional, IsArray } from 'class-validator';
 
-export class SharePostDto {
-  @IsDefined()
+export class CreatePostDto {
   @IsString()
-  content: string;
+  readonly content: string;
+
+  @IsArray()
+  @IsOptional()
+  readonly images?: ArrayBuffer[];
+
+  @IsOptional()
+  readonly video?: ArrayBuffer;
 }
