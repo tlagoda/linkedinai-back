@@ -38,7 +38,7 @@ export class PostsService {
   }
 
   async shareOnLinkedIn(
-    postContent: SharePostDto,
+    postContent: string,
     token: string,
     files?: Express.Multer.File[] | null,
   ) {
@@ -48,7 +48,10 @@ export class PostsService {
       }
       // share with just text
       if (!files?.length) {
-        return await this.linkedinService.share(postContent, token);
+        return await this.linkedinService.share(
+          { content: postContent },
+          token,
+        );
       }
 
       const isVideo = files[0].originalname.startsWith('video');
@@ -89,7 +92,7 @@ export class PostsService {
       await this.linkedinService.createMediaShare(
         personUrn,
         linkedinAccessToken,
-        'test',
+        postContent,
         fileAssets,
         isVideo,
       );
