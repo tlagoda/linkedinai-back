@@ -4,8 +4,6 @@ import { SharePostDto } from './dto/posts-share.dto';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Configuration, OpenAIApi } from 'openai';
-import FileType from 'file-type';
-
 @Injectable()
 export class PostsService {
   private openai: OpenAIApi;
@@ -45,6 +43,9 @@ export class PostsService {
     files?: Express.Multer.File[] | null,
   ) {
     try {
+      if (files?.length > 9) {
+        throw new Error('Too many files, max 9.');
+      }
       // share with just text
       if (!files?.length) {
         return await this.linkedinService.share(postContent, token);
@@ -64,33 +65,32 @@ export class PostsService {
       const personUrn = linkedinUserInformations.data().personUrn;
       const linkedinAccessToken = linkedinUserInformations.data().linkedInToken;
 
-      const registerResponse = await this.linkedinService.registerMedia(
-        personUrn,
-        linkedinAccessToken,
-        isVideo,
-      );
-      const uploadUrl =
-        registerResponse.value.uploadMechanism[
-          'com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest'
-        ].uploadUrl;
-      const asset = registerResponse.value.asset;
-
-      const binaryFiles = [];
+      const fileAssets = [];
       for (const file of files) {
-        binaryFiles.push(file.buffer);
-      }
+        const registerResponse = await this.linkedinService.registerMedia(
+          personUrn,
+          linkedinAccessToken,
+          isVideo,
+        );
+        const uploadUrl =
+          registerResponse.value.uploadMechanism[
+            'com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest'
+          ].uploadUrl;
 
-      await this.linkedinService.uploadMedia(
-        uploadUrl,
-        binaryFiles[0],
-        linkedinAccessToken,
-      );
+        fileAssets.push(registerResponse.value.asset);
+
+        await this.linkedinService.uploadMedia(
+          uploadUrl,
+          file.buffer,
+          linkedinAccessToken,
+        );
+      }
 
       await this.linkedinService.createMediaShare(
         personUrn,
         linkedinAccessToken,
-        'dabbb',
-        asset,
+        'test',
+        fileAssets,
         isVideo,
       );
     } catch (error) {

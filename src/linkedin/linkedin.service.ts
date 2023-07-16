@@ -106,9 +106,22 @@ export class LinkedinService {
     personUrn: string,
     accessToken: string,
     text: string,
-    imageAsset: string,
+    imageAssets: string[],
     isVideo = false,
   ) {
+    const media = imageAssets.map((asset) => {
+      return {
+        status: 'READY',
+        description: {
+          text: 'Description of the image',
+        },
+        media: asset,
+        title: {
+          text: 'Title of the image',
+        },
+      };
+    });
+
     const shareContent = {
       author: `urn:li:person:${personUrn}`,
       lifecycleState: 'PUBLISHED',
@@ -118,18 +131,7 @@ export class LinkedinService {
             text,
           },
           shareMediaCategory: isVideo ? 'VIDEO' : 'IMAGE',
-          media: [
-            {
-              status: 'READY',
-              description: {
-                text: 'Description of the image',
-              },
-              media: imageAsset,
-              title: {
-                text: 'Title of the image',
-              },
-            },
-          ],
+          media,
         },
       },
       visibility: {
