@@ -2,7 +2,6 @@ import { SharePostDto } from './../posts/dto/posts-share.dto';
 import { FirebaseService } from './../firebase/firebase.service';
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
-import fs from 'fs';
 
 @Injectable()
 export class LinkedinService {
@@ -58,7 +57,7 @@ export class LinkedinService {
     }
   }
 
-  async registerImage(personUrn: string, token: string, isVideo = false) {
+  async registerMedia(personUrn: string, token: string, isVideo = false) {
     const registerUploadRequest = {
       recipes: [
         `urn:li:digitalmediaRecipe:feedshare-${isVideo ? 'video' : 'image'}`,
@@ -103,7 +102,7 @@ export class LinkedinService {
     return response.data;
   }
 
-  async createImageShare(
+  async createMediaShare(
     personUrn: string,
     accessToken: string,
     text: string,

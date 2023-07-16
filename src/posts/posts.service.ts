@@ -4,7 +4,7 @@ import { SharePostDto } from './dto/posts-share.dto';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Configuration, OpenAIApi } from 'openai';
-import axios from 'axios';
+import FileType from 'file-type';
 
 @Injectable()
 export class PostsService {
@@ -50,6 +50,8 @@ export class PostsService {
         return await this.linkedinService.share(postContent, token);
       }
 
+      const isVideo = files[0].originalname.startsWith('video');
+
       // share with media
       const auth = this.firebaseService.getAuth();
       const decodedToken = await auth.verifyIdToken(token);
@@ -62,9 +64,10 @@ export class PostsService {
       const personUrn = linkedinUserInformations.data().personUrn;
       const linkedinAccessToken = linkedinUserInformations.data().linkedInToken;
 
-      const response = await this.linkedinService.registerImage(
+      const response = await this.linkedinService.registerMedia(
         personUrn,
         linkedinAccessToken,
+        isVideo,
       );
       const uploadUrl =
         response.value.uploadMechanism[
@@ -83,14 +86,13 @@ export class PostsService {
         linkedinAccessToken,
       );
 
-      const uu = await this.linkedinService.createImageShare(
+      const uu = await this.linkedinService.createMediaShare(
         personUrn,
         linkedinAccessToken,
-        'test',
+        'dabbb',
         asset,
+        isVideo,
       );
-
-      console.log(uu);
     } catch (error) {
       console.error('Error posting share:', error);
     }
