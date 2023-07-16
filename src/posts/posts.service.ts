@@ -64,29 +64,29 @@ export class PostsService {
       const personUrn = linkedinUserInformations.data().personUrn;
       const linkedinAccessToken = linkedinUserInformations.data().linkedInToken;
 
-      const response = await this.linkedinService.registerMedia(
+      const registerResponse = await this.linkedinService.registerMedia(
         personUrn,
         linkedinAccessToken,
         isVideo,
       );
       const uploadUrl =
-        response.value.uploadMechanism[
+        registerResponse.value.uploadMechanism[
           'com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest'
         ].uploadUrl;
-      const asset = response.value.asset;
+      const asset = registerResponse.value.asset;
 
       const binaryFiles = [];
       for (const file of files) {
         binaryFiles.push(file.buffer);
       }
 
-      const r = await this.linkedinService.uploadMedia(
+      await this.linkedinService.uploadMedia(
         uploadUrl,
         binaryFiles[0],
         linkedinAccessToken,
       );
 
-      const uu = await this.linkedinService.createMediaShare(
+      await this.linkedinService.createMediaShare(
         personUrn,
         linkedinAccessToken,
         'dabbb',
