@@ -37,7 +37,7 @@ export class PostsService {
     }
   }
 
-  async buildPrompt(userPrompt: any): string {
+  async buildPrompt(userPrompt: any): Promise<string> {
     return 'TODO';
   }
 
