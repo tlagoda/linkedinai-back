@@ -16,7 +16,7 @@ export class AuthController {
   async linkedinRedirect(@Req() req: Request, @Res() res: Response) {
     try {
       const { code, state: uid } = req.query;
-      console.log('AA');
+      console.log(req);
       // Swap code for access token
       const tokenResponse = await this.authService.getLinkedInToken(
         code.toString(),
