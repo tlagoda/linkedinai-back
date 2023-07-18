@@ -1,15 +1,16 @@
 import { SharePostDto } from './../posts/dto/posts-share.dto';
 import { FirebaseService } from './../firebase/firebase.service';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import axios from 'axios';
 
 @Injectable()
 export class LinkedinService {
+  private readonly logger = new Logger(LinkedinService.name);
+
   constructor(private firebaseService: FirebaseService) {}
 
   async share(postContent: SharePostDto, token: string) {
     try {
-      console.log('in share');
       return;
       const { uid } = await this.firebaseService.getAuth().verifyIdToken(token);
       const linkedinRef = this.firebaseService
@@ -53,12 +54,17 @@ export class LinkedinService {
       const postId = response.data.id;
       return { postId };
     } catch (error) {
-      console.error('Error posting share:', error);
+      this.logger.error('Error posting share:', error);
     }
   }
 
   async registerMedia(personUrn: string, token: string, isVideo = false) {
-    console.log('registerMedia');
+    this.logger.log(
+      `Registering media(${
+        isVideo ? 'video' : 'image'
+      }) for user #${personUrn}`,
+    );
+
     const registerUploadRequest = {
       recipes: [
         `urn:li:digitalmediaRecipe:feedshare-${isVideo ? 'video' : 'image'}`,
@@ -91,7 +97,7 @@ export class LinkedinService {
     imageBuffer: Buffer,
     accessToken: string,
   ) {
-    console.log('uploadMedia');
+    this.logger.log(`Uploading media...`);
 
     const response = await axios.post(uploadUrl, imageBuffer, {
       headers: {
@@ -112,7 +118,11 @@ export class LinkedinService {
     imageAssets: string[],
     isVideo = false,
   ) {
-    console.log('createMediaShare');
+    this.logger.log(
+      `Creating media share (${
+        isVideo ? 'video' : 'image'
+      }) for user #${personUrn}...`,
+    );
 
     const media = imageAssets.map((asset) => {
       return {
@@ -154,9 +164,6 @@ export class LinkedinService {
         },
       },
     );
-
-    console.log(response);
-
     return response.data;
   }
 }

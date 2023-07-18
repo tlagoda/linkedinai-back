@@ -1,7 +1,7 @@
 import { LinkedinService } from './../linkedin/linkedin.service';
 import { AuthGuard } from './../guards/auth.guard';
 import { PostsService } from './posts.service';
-import { Headers, InternalServerErrorException } from '@nestjs/common';
+import { Headers, InternalServerErrorException, Logger } from '@nestjs/common';
 import {
   Body,
   Controller,
@@ -16,10 +16,9 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('posts')
 export class PostsController {
-  constructor(
-    private readonly postsService: PostsService,
-    private readonly linkedinService: LinkedinService,
-  ) {}
+  private readonly logger = new Logger(PostsController.name);
+
+  constructor(private readonly postsService: PostsService) {}
 
   @Get('generate')
   @UseGuards(AuthGuard)
@@ -36,17 +35,16 @@ export class PostsController {
     @Body('content') content: string,
     @UploadedFiles() files?: Express.Multer.File[],
   ) {
+    this.logger.log('New share request...');
     const token = authHeader?.split('Bearer ')[1];
-    console.log('files', files);
-    console.log(token);
+
     try {
       const response = await this.postsService.shareOnLinkedIn(
-        'th',
+        content ? content : 'th',
         token,
         files,
       );
 
-      console.log(response);
       return response;
     } catch (error) {
       console.error('Error while sharing on LinkedIn:', error);

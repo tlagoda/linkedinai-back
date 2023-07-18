@@ -1,12 +1,13 @@
 import { LinkedinService } from './../linkedin/linkedin.service';
 import { FirebaseService } from 'src/firebase/firebase.service';
-import { SharePostDto } from './dto/posts-share.dto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Configuration, OpenAIApi } from 'openai';
+
 @Injectable()
 export class PostsService {
   private openai: OpenAIApi;
+  private readonly logger = new Logger(PostsService.name);
 
   constructor(
     private configService: ConfigService,
@@ -46,13 +47,17 @@ export class PostsService {
     token: string,
     files?: Express.Multer.File[] | null,
   ) {
+    this.logger.warn(
+      `User requested to share on LinkedIn, with${
+        !files ? 'out' : ` ${files.length}`
+      } files...`,
+    );
     try {
       if (files?.length > 9) {
         throw new Error('Too many files, max 9.');
       }
       // share with just text
       if (!files?.length) {
-        console.log('NO FILES');
         return await this.linkedinService.share(
           { content: postContent },
           token,
@@ -69,9 +74,14 @@ export class PostsService {
         'linkedin',
         decodedToken.uid,
       );
-      console.log('retrieved linkedin infos');
       const personUrn = linkedinUserInformations.data().personUrn;
       const linkedinAccessToken = linkedinUserInformations.data().linkedInToken;
+
+      if (!linkedinUserInformations || !personUrn || !linkedinAccessToken) {
+        this.logger.warn(
+          'Unable to retrieve all required informations to share on LinkedIn...',
+        );
+      }
 
       const fileAssets = [];
       for (const file of files) {
@@ -86,27 +96,23 @@ export class PostsService {
           ].uploadUrl;
 
         fileAssets.push(registerResponse.value.asset);
-        console.log(registerResponse);
-        const bb = await this.linkedinService.uploadMedia(
+
+        await this.linkedinService.uploadMedia(
           uploadUrl,
           file.buffer,
           linkedinAccessToken,
         );
-
-        console.log(bb);
       }
 
-      const aa = await this.linkedinService.createMediaShare(
+      await this.linkedinService.createMediaShare(
         personUrn,
         linkedinAccessToken,
         postContent,
         fileAssets,
         isVideo,
       );
-
-      console.log(aa);
     } catch (error) {
-      console.error('Error posting share:', error);
+      this.logger.error('Error posting share:', error);
     }
   }
 }
