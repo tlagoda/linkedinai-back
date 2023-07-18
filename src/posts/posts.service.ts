@@ -68,7 +68,7 @@ export class PostsService {
         'linkedin',
         decodedToken.uid,
       );
-
+      console.log('retrieved linkedin infos');
       const personUrn = linkedinUserInformations.data().personUrn;
       const linkedinAccessToken = linkedinUserInformations.data().linkedInToken;
 
@@ -85,21 +85,25 @@ export class PostsService {
           ].uploadUrl;
 
         fileAssets.push(registerResponse.value.asset);
-
-        await this.linkedinService.uploadMedia(
+        console.log(registerResponse);
+        const bb = await this.linkedinService.uploadMedia(
           uploadUrl,
           file.buffer,
           linkedinAccessToken,
         );
+
+        console.log(bb);
       }
 
-      await this.linkedinService.createMediaShare(
+      const aa = await this.linkedinService.createMediaShare(
         personUrn,
         linkedinAccessToken,
         postContent,
         fileAssets,
         isVideo,
       );
+
+      console.log(aa);
     } catch (error) {
       console.error('Error posting share:', error);
     }
