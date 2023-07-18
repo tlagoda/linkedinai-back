@@ -75,7 +75,12 @@ export class AuthService {
 
       // Get the elements array from the data
       const pictureData =
-        response.data.profilePicture['displayImage~'].elements;
+        response.data?.profilePicture?.['displayImage~']?.elements;
+
+      if (!pictureData) {
+        this.logger.warn('No profile picture found.');
+        return '';
+      }
 
       // Filter for the image with the highest resolution
       const profilePicture = pictureData.reduce((prev, current) => {

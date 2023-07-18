@@ -37,6 +37,10 @@ export class PostsService {
     }
   }
 
+  async buildPrompt(userPrompt: any): string {
+    return 'TODO';
+  }
+
   async shareOnLinkedIn(
     postContent: string,
     token: string,

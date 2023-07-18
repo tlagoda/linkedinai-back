@@ -44,7 +44,7 @@ export class AuthController {
         hasAuthorizedLinkedIn: true,
         linkedInToken: accessToken,
         linkedInTokenExpiresAt: expirationDate,
-        linkedInPP: linkedInProfilePictureUrl,
+        linkedInPP: linkedInProfilePictureUrl && linkedInProfilePictureUrl,
       });
 
       await this.firebaseService.updateDocInCollection(
