@@ -40,7 +40,7 @@ export class PostsController {
 
     try {
       const response = await this.postsService.shareOnLinkedIn(
-        content,
+        'test',
         token,
         files,
       );
