@@ -40,10 +40,13 @@ export class PostsController {
 
     try {
       const response = await this.postsService.shareOnLinkedIn(
-        'teeeeeest',
+        'th',
         token,
         files,
       );
+      console.log('files', files)
+      console.log(token)
+      console.log(response);
       return response;
     } catch (error) {
       console.error('Error while sharing on LinkedIn:', error);

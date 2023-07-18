@@ -52,6 +52,7 @@ export class PostsService {
       }
       // share with just text
       if (!files?.length) {
+        console.log('NO FILES');
         return await this.linkedinService.share(
           { content: postContent },
           token,
