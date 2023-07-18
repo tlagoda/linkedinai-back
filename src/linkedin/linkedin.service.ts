@@ -150,6 +150,8 @@ export class LinkedinService {
       },
     );
 
+    console.log(response);
+
     return response.data;
   }
 }
