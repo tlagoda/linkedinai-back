@@ -37,15 +37,15 @@ export class PostsController {
     @UploadedFiles() files?: Express.Multer.File[],
   ) {
     const token = authHeader?.split('Bearer ')[1];
-
+    console.log('files', files);
+    console.log(token);
     try {
       const response = await this.postsService.shareOnLinkedIn(
         'th',
         token,
         files,
       );
-      console.log('files', files)
-      console.log(token)
+
       console.log(response);
       return response;
     } catch (error) {

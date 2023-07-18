@@ -58,6 +58,7 @@ export class LinkedinService {
   }
 
   async registerMedia(personUrn: string, token: string, isVideo = false) {
+    console.log('registerMedia');
     const registerUploadRequest = {
       recipes: [
         `urn:li:digitalmediaRecipe:feedshare-${isVideo ? 'video' : 'image'}`,
@@ -90,6 +91,8 @@ export class LinkedinService {
     imageBuffer: Buffer,
     accessToken: string,
   ) {
+    console.log('uploadMedia');
+
     const response = await axios.post(uploadUrl, imageBuffer, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -109,6 +112,8 @@ export class LinkedinService {
     imageAssets: string[],
     isVideo = false,
   ) {
+    console.log('createMediaShare');
+
     const media = imageAssets.map((asset) => {
       return {
         status: 'READY',
