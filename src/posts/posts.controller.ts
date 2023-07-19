@@ -22,11 +22,7 @@ export class PostsController {
   @UseGuards(AuthGuard)
   async generate(@Body('options') promptOptions: PromptOptionsDto) {
     const prompt = this.postsService.buildPrompt(promptOptions);
-    console.log(promptOptions);
-    console.log(prompt);
-    const aa =  await this.postsService.generate(prompt);
-    console.log(aa)
-    return aa
+    return await this.postsService.generate(prompt);
   }
 
   @Post('share')
