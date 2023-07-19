@@ -1,13 +1,11 @@
-import { LinkedinService } from './../linkedin/linkedin.service';
+import { PromptOptionsDto } from './dto/posts-prompt-options.dto';
 import { AuthGuard } from './../guards/auth.guard';
 import { PostsService } from './posts.service';
 import { Headers, InternalServerErrorException, Logger } from '@nestjs/common';
 import {
   Body,
   Controller,
-  Get,
   Post,
-  Query,
   UseGuards,
   UseInterceptors,
   UploadedFiles,
@@ -20,11 +18,15 @@ export class PostsController {
 
   constructor(private readonly postsService: PostsService) {}
 
-  @Get('generate')
+  @Post('generate')
   @UseGuards(AuthGuard)
-  async generate(@Query('prompt') prompt: string) {
-    return { message: 'Coming soon!' };
-    // return await this.postsService.generate(prompt);
+  async generate(@Body('options') promptOptions: PromptOptionsDto) {
+    const prompt = this.postsService.buildPrompt(promptOptions);
+    console.log(promptOptions);
+    console.log(prompt);
+    const aa =  await this.postsService.generate(prompt);
+    console.log(aa)
+    return aa
   }
 
   @Post('share')

@@ -11,7 +11,6 @@ export class LinkedinService {
 
   async share(postContent: SharePostDto, token: string) {
     try {
-      return;
       const { uid } = await this.firebaseService.getAuth().verifyIdToken(token);
       const linkedinRef = this.firebaseService
         .getFirestore()

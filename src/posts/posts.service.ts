@@ -1,8 +1,13 @@
 import { LinkedinService } from './../linkedin/linkedin.service';
 import { FirebaseService } from 'src/firebase/firebase.service';
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Configuration, OpenAIApi } from 'openai';
+import { PromptOptionsDto } from './dto/posts-prompt-options.dto';
 
 @Injectable()
 export class PostsService {
@@ -28,9 +33,14 @@ export class PostsService {
         model: 'text-davinci-003',
         prompt: prompt,
         max_tokens: 1000,
-        temperature: 0.5,
+        temperature: 1,
         n: 1,
       });
+
+      const usage = response.data.usage;
+      this.logger.warn(
+        `Request used ${usage.total_tokens} tokens. (prompt: ${usage.prompt_tokens} / generated: ${usage.completion_tokens})`,
+      );
 
       return response.data.choices[0];
     } catch (err: any) {
@@ -38,8 +48,35 @@ export class PostsService {
     }
   }
 
-  async buildPrompt(userPrompt: any): Promise<string> {
-    return 'TODO';
+  buildPrompt(options: PromptOptionsDto): string {
+    const promptParts = [];
+    if (options.postTopic) {
+      promptParts.push(
+        `I'm targeting ${options.targetAudience}, and I want to share a ${options.postTopic} post.`,
+      );
+    }
+
+    if (options.tone) {
+      promptParts.push(`The tone of the post should be ${options.tone}.`);
+    }
+
+    if (options.postLength) {
+      promptParts.push(`The post should be ${options.postLength}.`);
+    }
+
+    if (options.postObjective) {
+      promptParts.push(`My objective is to ${options.postObjective}.`);
+    }
+
+    if (options.callToAction) {
+      promptParts.push(
+        `At the end, I would like to include a call to action: "${options.callToAction}".`,
+      );
+    }
+
+    const prompt = promptParts.join(' ');
+
+    return prompt;
   }
 
   async shareOnLinkedIn(
@@ -47,7 +84,7 @@ export class PostsService {
     token: string,
     files?: Express.Multer.File[] | null,
   ) {
-    this.logger.warn(
+    this.logger.log(
       `User requested to share on LinkedIn, with${
         !files ? 'out' : ` ${files.length}`
       } files...`,
@@ -81,6 +118,7 @@ export class PostsService {
         this.logger.warn(
           'Unable to retrieve all required informations to share on LinkedIn...',
         );
+        throw new InternalServerErrorException('Missing LinkedIn information');
       }
 
       const fileAssets = [];
