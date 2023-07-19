@@ -24,4 +24,8 @@ export class PromptOptionsDto {
   @IsOptional()
   @IsString()
   callToAction?: string;
+
+  @IsOptional()
+  @IsString()
+  additionalInfo?: string;
 }
