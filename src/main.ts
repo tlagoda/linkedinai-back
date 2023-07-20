@@ -16,7 +16,13 @@ async function bootstrap() {
   });
 
   app.enableCors({
-    origin: ['http://tldl.fr', 'https://tldl.fr', 'http://localhost:3000'],
+    origin: [
+      'http://tldl.fr',
+      'https://tldl.fr',
+      'http://localhost:3000',
+      'https://linkedinai.herokuapp.com/',
+      'http://linkedinai.herokuapp.com/',
+    ],
     allowedHeaders: 'Content-Type,Authorization',
     methods: 'GET,POST',
   });
