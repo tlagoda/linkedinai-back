@@ -1,7 +1,12 @@
 import { PromptOptionsDto } from './dto/posts-prompt-options.dto';
 import { AuthGuard } from './../guards/auth.guard';
 import { PostsService } from './posts.service';
-import { Headers, InternalServerErrorException, Logger } from '@nestjs/common';
+import {
+  Headers,
+  InternalServerErrorException,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import {
   Body,
   Controller,
@@ -20,9 +25,22 @@ export class PostsController {
 
   @Post('generate')
   @UseGuards(AuthGuard)
-  async generate(@Body('options') promptOptions: PromptOptionsDto) {
-    const prompt = this.postsService.buildPrompt(promptOptions);
-    return await this.postsService.generate(prompt);
+  async generate(
+    @Body('options') promptOptions: PromptOptionsDto,
+    @Headers('authorization') authorization: string,
+  ) {
+    try {
+      const token = authorization.split(' ')[1];
+      const canGenerate = await this.postsService.canGenerate(token);
+
+      if (!canGenerate) {
+        throw new UnauthorizedException('User is not allowed to generate');
+      }
+      const prompt = this.postsService.buildPrompt(promptOptions);
+      return await this.postsService.generate(prompt);
+    } catch (error) {
+      this.logger.error(`Error while generating post: ${error.message}`);
+    }
   }
 
   @Post('share')

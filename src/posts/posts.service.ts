@@ -27,6 +27,28 @@ export class PostsService {
     this.openai = new OpenAIApi(configuration);
   }
 
+  async canGenerate(token: string) {
+    const firebaseUser = await this.firebaseService
+      .getAuth()
+      .verifyIdToken(token);
+
+    const userSnapshot = await this.firebaseService.getDoc(
+      'users',
+      firebaseUser.uid,
+    );
+
+    if (!userSnapshot.exists) {
+      return false;
+    }
+
+    const userData = userSnapshot.data();
+
+    if (!userData.canGenerate) {
+      return false;
+    }
+    return true;
+  }
+
   async generate(prompt: string) {
     try {
       const response = await this.openai.createCompletion({
@@ -49,7 +71,7 @@ export class PostsService {
   }
 
   buildPrompt(options: PromptOptionsDto): string {
-    const promptParts = [];
+    const promptParts = ['I need you to create a LinkedIn Post.'];
     if (options.postTopic) {
       promptParts.push(
         `I'm targeting ${options.targetAudience}, and I want to share a ${options.postTopic} post.`,
