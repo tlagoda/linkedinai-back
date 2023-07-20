@@ -8,7 +8,12 @@ async function bootstrap() {
   app.use(new HttpsRedirectMiddleware().use);
 
   app.enableCors({
-    origin: ['http://tldl.fr', 'https://tldl.fr', 'http://localhost:3000'],
+    origin: [
+      'http://tldl.fr',
+      'https://tldl.fr',
+      'http://localhost:3000',
+      'http://www.tldl.fr',
+    ],
     allowedHeaders: 'Content-Type,Authorization',
     methods: 'GET,POST',
   });
