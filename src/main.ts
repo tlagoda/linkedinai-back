@@ -8,7 +8,7 @@ async function bootstrap() {
   app.use((err, req, res, next) => {
     const logger = new Logger('App');
 
-    if (err.name === 'UnauthorizedError' && err.code === 'ERR_ASSERTION') {
+    if (err) {
       logger.error('CORS error:', err.message);
     }
 
