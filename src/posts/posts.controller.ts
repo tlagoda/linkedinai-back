@@ -29,6 +29,7 @@ export class PostsController {
     @Body('options') promptOptions: PromptOptionsDto,
     @Headers('authorization') authorization: string,
   ) {
+    this.logger.log('Post generation requested...');
     try {
       const token = authorization.split(' ')[1];
       const canGenerate = await this.postsService.canGenerate(token);
