@@ -71,7 +71,10 @@ export class PostsService {
   }
 
   buildPrompt(options: PromptOptionsDto): string {
-    const promptParts = ['I need you to create a LinkedIn Post.'];
+    const promptParts = [
+      'I need you to create a tweet.',
+      'Feel free to use line breaks and emojis if you think it adds value to the post.',
+    ];
     if (options.postTopic) {
       promptParts.push(
         `I'm targeting ${options.targetAudience}, and I want to share a ${options.postTopic} post.`,
@@ -92,7 +95,7 @@ export class PostsService {
 
     if (options.callToAction) {
       promptParts.push(
-        `At the end, I would like to include a call to action: "${options.callToAction}".`,
+        `At the end, I would like to include a call to action, so for example you can "${options.callToAction}".`,
       );
     }
 
