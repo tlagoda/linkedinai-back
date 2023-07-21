@@ -72,7 +72,7 @@ export class PostsService {
 
   buildPrompt(options: PromptOptionsDto): string {
     const promptParts = [
-      'I need you to create a tweet.',
+      'I need you to create a LinkedIn post.',
       'Feel free to use line breaks and emojis if you think it adds value to the post.',
     ];
     if (options.postTopic) {
