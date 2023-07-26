@@ -1,5 +1,5 @@
 import { FirebaseService } from './../firebase/firebase.service';
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { Logger } from '@nestjs/common';
