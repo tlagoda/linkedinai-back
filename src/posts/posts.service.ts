@@ -49,9 +49,13 @@ export class PostsService {
     return true;
   }
 
-  async generate(prompt: string) {
+  async generate(prompt: string, apiKey?: string) {
+    const openai = apiKey
+      ? this.initializeOpenAIWithApiKey(apiKey)
+      : this.openai;
+
     try {
-      const response = await this.openai.createCompletion({
+      const response = await openai.createCompletion({
         model: 'text-davinci-003',
         prompt: prompt,
         max_tokens: 1000,
@@ -68,6 +72,19 @@ export class PostsService {
     } catch (err: any) {
       return err.response;
     }
+  }
+
+  async getUserApiKey(token: string): Promise<string> {
+    return 'apiKey';
+  }
+
+  initializeOpenAIWithApiKey(apiKey: string): OpenAIApi {
+    const configuration = new Configuration({
+      organization: 'org-oyGJgWrLh8lYCJF01HvjlHYw',
+      apiKey,
+    });
+
+    return new OpenAIApi(configuration);
   }
 
   buildPrompt(options: PromptOptionsDto): string {

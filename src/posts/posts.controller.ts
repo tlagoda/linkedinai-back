@@ -5,6 +5,7 @@ import {
   Headers,
   InternalServerErrorException,
   Logger,
+  Query,
   UnauthorizedException,
 } from '@nestjs/common';
 import {
@@ -28,6 +29,7 @@ export class PostsController {
   async generate(
     @Body('options') promptOptions: PromptOptionsDto,
     @Headers('authorization') authorization: string,
+    @Query() free: boolean,
   ) {
     this.logger.log('Post generation requested...');
     try {
@@ -37,6 +39,11 @@ export class PostsController {
       if (!canGenerate) {
         throw new UnauthorizedException('User is not allowed to generate');
       }
+      let apiKey = null;
+      if (free) {
+        apiKey = await this.postsService.getUserApiKey(token);
+      }
+      console.log(apiKey);
       const prompt = this.postsService.buildPrompt(promptOptions);
       return await this.postsService.generate(prompt);
     } catch (error) {
