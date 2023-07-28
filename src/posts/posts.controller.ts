@@ -1,4 +1,4 @@
-import { PromptOptionsDto } from './dto/posts-prompt-options.dto';
+import { GeneratePostDto } from './dto/generate-post.dto';
 import { AuthGuard } from './../guards/auth.guard';
 import { PostsService } from './posts.service';
 import {
@@ -27,10 +27,10 @@ export class PostsController {
   @Post('generate')
   @UseGuards(AuthGuard)
   async generate(
-    @Body('options') promptOptions: PromptOptionsDto,
+    @Body() promptOptions: GeneratePostDto,
     @Headers('authorization') authorization: string,
-    @Query() free: boolean,
   ) {
+    console.log(promptOptions);
     this.logger.log('Post generation requested...');
     try {
       const token = authorization.split(' ')[1];
@@ -40,10 +40,11 @@ export class PostsController {
         throw new UnauthorizedException('User is not allowed to generate');
       }
       let apiKey = null;
-      if (free) {
+
+      if (promptOptions.free) {
         apiKey = await this.postsService.getUserApiKey(token);
       }
-      console.log(apiKey);
+
       const prompt = this.postsService.buildPrompt(promptOptions);
       return await this.postsService.generate(prompt);
     } catch (error) {

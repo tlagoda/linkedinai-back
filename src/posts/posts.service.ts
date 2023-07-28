@@ -1,3 +1,4 @@
+import { GeneratePostDto } from './dto/generate-post.dto';
 import { LinkedinService } from './../linkedin/linkedin.service';
 import { FirebaseService } from 'src/firebase/firebase.service';
 import {
@@ -7,7 +8,6 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Configuration, OpenAIApi } from 'openai';
-import { PromptOptionsDto } from './dto/posts-prompt-options.dto';
 
 @Injectable()
 export class PostsService {
@@ -87,7 +87,7 @@ export class PostsService {
     return new OpenAIApi(configuration);
   }
 
-  buildPrompt(options: PromptOptionsDto): string {
+  buildPrompt(options: GeneratePostDto): string {
     const promptParts = [
       'I need you to create a LinkedIn post.',
       'Feel free to use line breaks and emojis if you think it adds value to the post.',
