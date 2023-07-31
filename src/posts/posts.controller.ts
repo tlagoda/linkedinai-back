@@ -46,7 +46,7 @@ export class PostsController {
       }
 
       const prompt = this.postsService.buildPrompt(promptOptions);
-      return await this.postsService.generate(prompt);
+      return await this.postsService.generate(prompt, apiKey);
     } catch (error) {
       this.logger.error(`Error while generating post: ${error.message}`);
     }

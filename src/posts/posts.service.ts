@@ -75,7 +75,19 @@ export class PostsService {
   }
 
   async getUserApiKey(token: string): Promise<string> {
-    return 'apiKey';
+    const { uid } = await this.firebaseService.getAuth().verifyIdToken(token);
+    const userRef = this.firebaseService
+      .getFirestore()
+      .collection('confidential')
+      .doc(uid);
+    const snapshot = await userRef.get();
+    const userData = snapshot.data();
+
+    if (!userData.apiKey) {
+      return null;
+    }
+
+    return userData.apiKey;
   }
 
   initializeOpenAIWithApiKey(apiKey: string): OpenAIApi {
