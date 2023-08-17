@@ -30,7 +30,6 @@ export class PostsController {
     @Body() promptOptions: GeneratePostDto,
     @Headers('authorization') authorization: string,
   ) {
-    console.log(promptOptions);
     this.logger.log('Post generation requested...');
     try {
       const token = authorization.split(' ')[1];

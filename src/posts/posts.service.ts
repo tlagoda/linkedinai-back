@@ -78,7 +78,7 @@ export class PostsService {
     const { uid } = await this.firebaseService.getAuth().verifyIdToken(token);
     const userRef = this.firebaseService
       .getFirestore()
-      .collection('confidential')
+      .collection('users')
       .doc(uid);
     const snapshot = await userRef.get();
     const userData = snapshot.data();
