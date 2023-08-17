@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PostsController } from './posts/posts.controller';
+import { UsersController } from './users/users.controller'
 import { PostsService } from './posts/posts.service';
 import { ConfigModule } from '@nestjs/config';
 import { AuthController } from './auth/auth.controller';
@@ -18,6 +19,7 @@ import { LinkedinService } from './linkedin/linkedin.service';
     PostsController,
     AuthController,
     FirebaseController,
+    UsersController
   ],
   providers: [
     AppService,

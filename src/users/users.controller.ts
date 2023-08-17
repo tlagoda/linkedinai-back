@@ -1,19 +1,20 @@
+import { UpdateUserDto } from './dto/users-update.dto';
 import { UsersService } from './users.service';
 import { Body, Controller, Logger, Param, Put } from '@nestjs/common';
 
 @Controller('users')
-export class PostsController {
-  private readonly logger = new Logger(PostsController.name);
+export class UsersController {
+  private readonly logger = new Logger(UsersController.name);
 
   constructor(private readonly userService: UsersService) {}
 
   @Put(':id')
   async updateUser(
     @Param('id') id: string,
-    @Body() updateUserDto: any,
+    @Body() updateUserDto: UpdateUserDto,
   ): Promise<void> {
     try {
-      const updatedUser = await this.userService.updateUser(id, updateUserDto);
+      await this.userService.updateUser(id, updateUserDto);
     } catch (error) {
       this.logger.error(`Failed to update user: ${error.message}`);
       throw error;

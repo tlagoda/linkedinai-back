@@ -15,7 +15,7 @@ async function bootstrap() {
       'http://www.tldl.fr',
     ],
     allowedHeaders: 'Content-Type,Authorization',
-    methods: 'GET,POST',
+    methods: 'GET,POST,PUT',
   });
 
   await app.listen(process.env.PORT || 8888);
