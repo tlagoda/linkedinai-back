@@ -52,4 +52,8 @@ export class UpdateUserDto {
   @IsString()
   @IsOptional()
   job?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  useOwnApiKey?: boolean;
 }

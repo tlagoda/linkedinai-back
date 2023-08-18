@@ -43,6 +43,7 @@ export class UsersService {
       ...(data.apiKey && { apiKey: data.apiKey }),
       ...(data.job && { job: data.job }),
       ...(data.company && { company: data.company }),
+      ...(data.useOwnApiKey && { useOwnApiKey: data.useOwnApiKey }),
     };
   }
 }
