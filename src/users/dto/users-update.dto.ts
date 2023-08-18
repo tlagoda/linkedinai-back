@@ -44,4 +44,12 @@ export class UpdateUserDto {
   @IsString()
   @IsOptional()
   apiKey?: string;
+
+  @IsString()
+  @IsOptional()
+  company?: string;
+
+  @IsString()
+  @IsOptional()
+  job?: string;
 }
