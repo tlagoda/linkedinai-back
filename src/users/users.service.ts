@@ -11,7 +11,6 @@ export class UsersService {
 
   async updateUser(uid: string, data: UpdateUserDto): Promise<void> {
     const sanitizedData = this.sanitizeUserData(data);
-    console.log(sanitizedData)
     try {
       const userRef = this.firebaseService
         .getFirestore()
@@ -43,7 +42,7 @@ export class UsersService {
       ...(data.apiKey && { apiKey: data.apiKey }),
       ...(data.job && { job: data.job }),
       ...(data.company && { company: data.company }),
-      ...(data.useOwnApiKey && { useOwnApiKey: data.useOwnApiKey }),
+      ...(data.useOwnApiKey !== null && { useOwnApiKey: data.useOwnApiKey }),
     };
   }
 }

@@ -50,11 +50,11 @@ export class PostsService {
   }
 
   async generate(prompt: string, apiKey?: string) {
-    const openai = apiKey
-      ? this.initializeOpenAIWithApiKey(apiKey)
-      : this.openai;
-
     try {
+      const openai = apiKey
+        ? this.initializeOpenAIWithApiKey(apiKey)
+        : this.openai;
+
       const response = await openai.createCompletion({
         model: 'text-davinci-003',
         prompt: prompt,

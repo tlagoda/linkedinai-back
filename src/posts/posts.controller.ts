@@ -39,7 +39,7 @@ export class PostsController {
         throw new UnauthorizedException('User is not allowed to generate');
       }
       let apiKey = null;
-
+      console.log('freeCall:', promptOptions.free);
       if (promptOptions.free) {
         apiKey = await this.postsService.getUserApiKey(token);
       }
