@@ -59,7 +59,7 @@ export class PostsService {
         model: 'text-davinci-003',
         prompt: prompt,
         max_tokens: 1000,
-        temperature: 0.3,
+        temperature: 0.9,
         n: 1,
       });
 
@@ -102,30 +102,32 @@ export class PostsService {
   buildPrompt(options: GeneratePostDto): string {
     const promptParts = [
       'I need you to create a LinkedIn post.',
-      'Feel free to use line breaks and emojis if you think it adds value to the post.',
+      'Feel free to use line breaks and emojis if you think it adds value to the post. Do not include hashtags.',
+      'Here are the instructions:',
     ];
+
     if (options.postTopic) {
-      promptParts.push(
-        `I'm targeting ${options.targetAudience}, and I want to share a ${options.postTopic} post.`,
-      );
+      promptParts.push(`Topic: ${options.postTopic}`);
+    }
+
+    if (options.targetAudience) {
+      promptParts.push(`Audience: ${options.targetAudience}`);
     }
 
     if (options.tone) {
-      promptParts.push(`The tone of the post should be ${options.tone}.`);
+      promptParts.push(`Tone: ${options.tone}`);
     }
 
     if (options.postLength) {
-      promptParts.push(`The post should be ${options.postLength}.`);
+      promptParts.push(`Length: ${options.postLength}`);
     }
 
     if (options.postObjective) {
-      promptParts.push(`My objective is to ${options.postObjective}.`);
+      promptParts.push(`Objective: ${options.postObjective}`);
     }
 
     if (options.callToAction) {
-      promptParts.push(
-        `At the end, I would like to include a call to action, so for example you can "${options.callToAction}".`,
-      );
+      promptParts.push(`CTA: ${options.callToAction}`);
     }
 
     const prompt = promptParts.join(' ');
