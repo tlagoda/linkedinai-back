@@ -101,7 +101,7 @@ export class AuthService {
     try {
       const userRef = this.firebaseService
         .getFirestore()
-        .collection('linkedin')
+        .collection('users')
         .doc(uid);
       const snapshot = await userRef.get();
       const userData = snapshot.data();
@@ -157,12 +157,12 @@ export class AuthService {
         .getAuth()
         .verifyIdToken(firebaseToken);
 
-      const linkedinRef = this.firebaseService
+      const userRef = this.firebaseService
         .getFirestore()
-        .collection('linkedin')
+        .collection('users')
         .doc(uid);
 
-      const snapshot = await linkedinRef.get();
+      const snapshot = await userRef.get();
       const linkedinData = snapshot.data();
 
       if (!linkedinData || !linkedinData.linkedInToken) {

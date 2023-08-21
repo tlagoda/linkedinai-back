@@ -12,12 +12,12 @@ export class LinkedinService {
   async share(postContent: SharePostDto, token: string) {
     try {
       const { uid } = await this.firebaseService.getAuth().verifyIdToken(token);
-      const linkedinRef = this.firebaseService
+      const userRef = this.firebaseService
         .getFirestore()
-        .collection('linkedin')
+        .collection('users')
         .doc(uid);
 
-      const snapshot = await linkedinRef.get();
+      const snapshot = await userRef.get();
       const linkedinData = snapshot.data();
 
       if (!linkedinData || !linkedinData.linkedInId) {

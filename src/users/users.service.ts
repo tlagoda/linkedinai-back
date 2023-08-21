@@ -42,7 +42,8 @@ export class UsersService {
       ...(data.apiKey && { apiKey: data.apiKey }),
       ...(data.job && { job: data.job }),
       ...(data.company && { company: data.company }),
-      ...(data.useOwnApiKey !== null && { useOwnApiKey: data.useOwnApiKey }),
+      ...(data.useOwnApiKey !== null &&
+        data.useOwnApiKey !== undefined && { useOwnApiKey: data.useOwnApiKey }),
     };
   }
 }

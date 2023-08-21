@@ -48,18 +48,6 @@ export class AuthController {
         personUrn: userInformations.data.id,
       });
 
-      // await this.firebaseService.updateDocInCollection(
-      //   'linkedin',
-      //   uid as string,
-      //   {
-      //     linkedInId: userInformations.data.id,
-      //     hasAuthorizedLinkedIn: true,
-      //     linkedInToken: accessToken,
-      //     linkedInTokenExpiresAt: expirationDate,
-      //     personUrn: userInformations.data.id,
-      //   },
-      // );
-
       res.status(200).redirect('http://tldl.fr/generate');
     } catch (error) {
       console.error('Error during LinkedIn callback:', error);
